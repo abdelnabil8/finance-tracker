@@ -1,23 +1,28 @@
-from fastapi import APIRouter
-from app.models import Transaction, TransactionType
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models import Transaction, TransactionCreate, TransactionResponse
+from typing import List
 
 router = APIRouter()
 
-# In-memory list (no database yet)
-transactions = []
+@router.get("/", response_model=List[TransactionResponse])
+def get_transactions(db: Session = Depends(get_db)):
+    return db.query(Transaction).all()
 
-@router.get("/")
-def get_transactions():
-    return transactions
-
-@router.post("/")
-def create_transaction(transaction: Transaction):
-    transactions.append(transaction.dict())
-    return transaction
+@router.post("/", response_model=TransactionResponse)
+def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
+    db_transaction = Transaction(**transaction.dict())
+    db.add(db_transaction)
+    db.commit()
+    db.refresh(db_transaction)
+    return db_transaction
 
 @router.delete("/{transaction_id}")
-def delete_transaction(transaction_id: int):
-    if transaction_id >= len(transactions) or transaction_id < 0:
+def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+    if not transaction:
         return {"error": "Transaction not found"}
-    transactions.pop(transaction_id)
+    db.delete(transaction)
+    db.commit()
     return {"message": "Deleted successfully"}
