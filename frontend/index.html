@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+    <h1>⬡ FINANCE TRACKER</h1>
+    <p>Personal wealth monitoring system</p>
+</div>
+
+        <!-- Summary Cards -->
+        <div class="summary">
+            <div class="card income">
+                <h3>Total Income</h3>
+                <p id="total-income">€0.00</p>
+            </div>
+            <div class="card expense">
+                <h3>Total Expenses</h3>
+                <p id="total-expense">€0.00</p>
+            </div>
+            <div class="card balance">
+                <h3>Balance</h3>
+                <p id="balance">€0.00</p>
+            </div>
+        </div>
+
+        <!-- Add Transaction Form -->
+        <div class="form-section">
+            <h2>Add Transaction</h2>
+            <div class="form">
+                <input type="text" id="title" placeholder="Title (e.g. Grocery)" />
+                <input type="number" id="amount" placeholder="Amount (e.g. 45.50)" />
+                <select id="type">
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+                <input type="text" id="category" placeholder="Category (e.g. Food)" />
+                <button onclick="addTransaction()">Add</button>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="table-section">
+            <h2>Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-table">
+                    <!-- Transactions will appear here -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
