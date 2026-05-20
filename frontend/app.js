@@ -70,7 +70,7 @@ async function addTransaction() {
 
 // Delete a transaction
 async function deleteTransaction(id) {
-    await fetch(`${API}/${id}`, { method: "DELETE" });
+    await fetch(`${API}${id}`, { method: "DELETE" });
     getTransactions();
 }
 
