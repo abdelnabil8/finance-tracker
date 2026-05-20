@@ -34,6 +34,8 @@ async function getTransactions() {
     document.getElementById("total-income").textContent = `€${totalIncome.toFixed(2)}`;
     document.getElementById("total-expense").textContent = `€${totalExpense.toFixed(2)}`;
     document.getElementById("balance").textContent = `€${balance.toFixed(2)}`;
+
+    updateChart(transactions);
 }
 
 // Add a transaction
@@ -76,3 +78,49 @@ async function deleteTransaction(id) {
 
 // Load transactions when page opens
 getTransactions();
+
+let expenseChart = null;
+
+function updateChart(transactions) {
+    const expenses = transactions.filter(t => t.type === "expense");
+    
+    // Group by category
+    const categoryMap = {};
+    expenses.forEach(t => {
+        categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+    });
+
+    const labels = Object.keys(categoryMap);
+    const data = Object.values(categoryMap);
+
+    const colors = [
+        '#00ff88', '#00aaff', '#ff4466', '#ffaa00',
+        '#aa00ff', '#00ffff', '#ff6600', '#ff00aa'
+    ];
+
+    if (expenseChart) expenseChart.destroy();
+
+    const ctx = document.getElementById("expenseChart").getContext("2d");
+    expenseChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderColor: '#111111',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e0e0e0',
+                        font: { family: 'Share Tech Mono' }
+                    }
+                }
+            }
+        }
+    });
+}

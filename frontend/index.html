@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -30,7 +31,11 @@
                 <p id="balance">€0.00</p>
             </div>
         </div>
-
+        <!-- Chart -->
+        <div class="chart-section">
+            <h2>Expenses by Category</h2>
+            <canvas id="expenseChart"></canvas>
+        </div>
         <!-- Add Transaction Form -->
         <div class="form-section">
             <h2>Add Transaction</h2>
@@ -50,6 +55,7 @@
                     <option value="Health">💊 Health</option>
                     <option value="Salary">💼 Salary</option>
                     <option value="Freelance">💻 Freelance</option>
+                    <option value="Grocery">🛒 Grocery</option>
                     <option value="Shopping">🛍️ Shopping</option>
                     <option value="Other">📦 Other</option>
                 </select>
