@@ -12,7 +12,7 @@ def get_transactions(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=TransactionResponse)
 def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
-    db_transaction = Transaction(**transaction.dict())
+    db_transaction = Transaction(**transaction.model_dump())
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)

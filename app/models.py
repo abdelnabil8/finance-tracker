@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Enum
 from pydantic import BaseModel
 from enum import Enum as PyEnum
+from pydantic import ConfigDict
 from app.database import Base
 
 # --- SQLAlchemy Model (Database Table) ---
@@ -26,5 +27,4 @@ class TransactionCreate(BaseModel):
 
 class TransactionResponse(TransactionCreate):
     id: int
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
