@@ -1,24 +1,31 @@
 const API = "http://localhost:8000/api/transactions/";
 
 // Fetch and display all transactions
-async function getTransactions() {
-    const response = await fetch(API);
-    const transactions = await response.json();
+async function getTransactions(type = "", category = "", updateChartData = true) {
+    // Filtered URL for the table
+    let url = API;
+    const params = new URLSearchParams();
+    if (type) params.append("type", type);
+    if (category) params.append("category", category);
+    if (params.toString()) url += `?${params.toString()}`;
 
+    // Fetch filtered transactions (for table only)
+    const filteredResponse = await fetch(url);
+    const filteredTransactions = await filteredResponse.json();
+
+    // Fetch ALL transactions (for cards and chart)
+    const allResponse = await fetch(API);
+    const allTransactions = await allResponse.json();
+
+    // Update table with filtered data
     const tbody = document.getElementById("transactions-table");
     tbody.innerHTML = "";
 
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-    if (transactions.length === 0) {
+    if (filteredTransactions.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="empty-state">// NO TRANSACTIONS FOUND</td></tr>`;
     }
 
-    transactions.forEach(t => {
-        if (t.type === "income") totalIncome += t.amount;
-        else totalExpense += t.amount;
-
+    filteredTransactions.forEach(t => {
         tbody.innerHTML += `
             <tr>
                 <td>${t.title}</td>
@@ -30,12 +37,32 @@ async function getTransactions() {
         `;
     });
 
+    // Update cards with ALL data
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    allTransactions.forEach(t => {
+        if (t.type === "income") totalIncome += t.amount;
+        else totalExpense += t.amount;
+    });
+
     const balance = totalIncome - totalExpense;
     document.getElementById("total-income").textContent = `€${totalIncome.toFixed(2)}`;
     document.getElementById("total-expense").textContent = `€${totalExpense.toFixed(2)}`;
     document.getElementById("balance").textContent = `€${balance.toFixed(2)}`;
+
+    // Update chart with ALL data
+    // Only update chart when not filtering
+    if (updateChartData) {
+        updateChart(allTransactions);
+    }
 }
 
+function applyFilters() {
+    const type = document.getElementById("filter-type").value;
+    const category = document.getElementById("filter-category").value;
+    getTransactions(type, category, false);
+}
 // Add a transaction
 async function addTransaction() {
     const title = document.getElementById("title").value;
@@ -76,3 +103,49 @@ async function deleteTransaction(id) {
 
 // Load transactions when page opens
 getTransactions();
+
+let expenseChart = null;
+
+function updateChart(transactions) {
+    const expenses = transactions.filter(t => t.type === "expense");
+    
+    // Group by category
+    const categoryMap = {};
+    expenses.forEach(t => {
+        categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+    });
+
+    const labels = Object.keys(categoryMap);
+    const data = Object.values(categoryMap);
+
+    const colors = [
+        '#00ff88', '#00aaff', '#ff4466', '#ffaa00',
+        '#aa00ff', '#00ffff', '#ff6600', '#ff00aa'
+    ];
+
+    if (expenseChart) expenseChart.destroy();
+
+    const ctx = document.getElementById("expenseChart").getContext("2d");
+    expenseChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderColor: '#111111',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#e0e0e0',
+                        font: { family: 'Share Tech Mono' }
+                    }
+                }
+            }
+        }
+    });
+}

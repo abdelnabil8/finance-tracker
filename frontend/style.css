@@ -280,3 +280,42 @@ tr:last-child td { border-bottom: none; }
     font-size: 0.8rem;
     letter-spacing: 0.15em;
 }
+.chart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    width: 350px;
+    margin: 0 auto 30px;
+}
+
+#expenseChart {
+    max-width: 300px;
+    max-height: 300px;
+    margin: 0 auto;
+    display: block;
+}
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.filters select {
+    padding: 10px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.filters select:focus {
+    border-color: var(--green-border);
+    box-shadow: 0 0 0 3px var(--green-glow);
+}
