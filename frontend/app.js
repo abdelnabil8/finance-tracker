@@ -1,5 +1,66 @@
-const API = "http://localhost:8000/api/transactions/";
 
+
+const API = "http://localhost:8000/api/transactions/";
+const AUTH_API = "http://localhost:8000/api/auth";
+let token = null;
+
+function getHeaders() {
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    };
+}
+
+function showRegister() {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("register-section").style.display = "flex";
+}
+
+function showLogin() {
+    document.getElementById("register-section").style.display = "none";
+    document.getElementById("login-section").style.display = "flex";
+}
+
+async function register() {
+    const username = document.getElementById("reg-username").value;
+    const email = document.getElementById("reg-email").value;
+    const password = document.getElementById("reg-password").value;
+
+    const response = await fetch(`${AUTH_API}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+    });
+
+    if (response.ok) {
+        document.getElementById("register-error").textContent = "Account created! Please login.";
+        setTimeout(showLogin, 1500);
+    } else {
+        const data = await response.json();
+        document.getElementById("register-error").textContent = data.detail;
+    }
+}
+
+async function login() {
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+
+    const response = await fetch(`${AUTH_API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email: "", password })
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        token = data.access_token;
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        getTransactions();
+    } else {
+        document.getElementById("login-error").textContent = "Invalid username or password";
+    }
+}
 // Fetch and display all transactions
 async function getTransactions(type = "", category = "", updateChartData = true) {
     // Filtered URL for the table
@@ -10,11 +71,11 @@ async function getTransactions(type = "", category = "", updateChartData = true)
     if (params.toString()) url += `?${params.toString()}`;
 
     // Fetch filtered transactions (for table only)
-    const filteredResponse = await fetch(url);
+    const filteredResponse = await fetch(url, { headers: getHeaders() });
     const filteredTransactions = await filteredResponse.json();
 
     // Fetch ALL transactions (for cards and chart)
-    const allResponse = await fetch(API);
+    const allResponse = await fetch(API, { headers: getHeaders() });
     const allTransactions = await allResponse.json();
 
     // Update table with filtered data
@@ -77,7 +138,7 @@ async function addTransaction() {
 
     await fetch(API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify({
             title: title,
             amount: parseFloat(amount),
@@ -97,7 +158,7 @@ async function addTransaction() {
 
 // Delete a transaction
 async function deleteTransaction(id) {
-    await fetch(`${API}${id}`, { method: "DELETE" });
+    await fetch(`${API}${id}`, { method: "DELETE", headers: getHeaders() });
     getTransactions();
 }
 

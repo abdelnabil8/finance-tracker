@@ -8,7 +8,36 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<!-- Login Section -->
+<div id="login-section" class="login-container">
+    <div class="login-box">
+        <h1>⬡ FINANCE TRACKER</h1>
+        <p class="login-subtitle">Access your financial dashboard</p>
+        <div class="login-form">
+            <input type="text" id="login-username" placeholder="Username" />
+            <input type="password" id="login-password" placeholder="Password" />
+            <button onclick="login()">LOGIN</button>
+            <button class="register-btn" onclick="showRegister()">REGISTER</button>
+        </div>
+        <p id="login-error" class="error-msg"></p>
+    </div>
+</div>
 
+<!-- Register Section -->
+<div id="register-section" class="login-container" style="display:none">
+    <div class="login-box">
+        <h1>⬡ REGISTER</h1>
+        <p class="login-subtitle">Create your account</p>
+        <div class="login-form">
+            <input type="text" id="reg-username" placeholder="Username" />
+            <input type="email" id="reg-email" placeholder="Email" />
+            <input type="password" id="reg-password" placeholder="Password" />
+            <button onclick="register()">CREATE ACCOUNT</button>
+            <button class="register-btn" onclick="showLogin()">BACK TO LOGIN</button>
+        </div>
+        <p id="register-error" class="error-msg"></p>
+    </div>
+</div>
     <div class="container">
 
         <div class="header">
