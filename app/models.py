@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Enum
+from sqlalchemy import Column, Integer, String, Float, Enum, ForeignKey
 from pydantic import BaseModel
 from enum import Enum as PyEnum
 from pydantic import ConfigDict
@@ -17,6 +18,7 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     type = Column(Enum(TransactionType), nullable=False)
     category = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
 # --- Pydantic Model (API Validation) ---
 class TransactionCreate(BaseModel):

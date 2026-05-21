@@ -14,7 +14,7 @@ def get_transactions(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    query = db.query(Transaction)
+    query = db.query(Transaction).filter(Transaction.user_id == current_user.id)
     if type:
         query = query.filter(Transaction.type == type)
     if category:
@@ -27,7 +27,7 @@ def create_transaction(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_transaction = Transaction(**transaction.model_dump())
+    db_transaction = Transaction(**transaction.model_dump(), user_id=current_user.id)
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -39,7 +39,10 @@ def delete_transaction(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+    transaction = db.query(Transaction).filter(
+        Transaction.id == transaction_id,
+        Transaction.user_id == current_user.id
+    ).first()
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     db.delete(transaction)
