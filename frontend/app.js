@@ -2,7 +2,15 @@
 
 const API = "http://localhost:8000/api/transactions/";
 const AUTH_API = "http://localhost:8000/api/auth";
-let token = null;
+let token = sessionStorage.getItem("token") || null;
+
+window.onload = function() {
+    if (token) {
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        getTransactions();
+    }
+}
 
 function getHeaders() {
     return {
@@ -54,12 +62,19 @@ async function login() {
     if (response.ok) {
         const data = await response.json();
         token = data.access_token;
+        sessionStorage.setItem("token", token);
         document.getElementById("login-section").style.display = "none";
         document.getElementById("main-app").style.display = "block";
         getTransactions();
     } else {
         document.getElementById("login-error").textContent = "Invalid username or password";
     }
+}
+function logout() {
+    token = null;
+    sessionStorage.removeItem("token");
+    document.getElementById("main-app").style.display = "none";
+    document.getElementById("login-section").style.display = "flex";
 }
 // Fetch and display all transactions
 async function getTransactions(type = "", category = "", updateChartData = true) {
@@ -162,8 +177,6 @@ async function deleteTransaction(id) {
     getTransactions();
 }
 
-// Load transactions when page opens
-getTransactions();
 
 let expenseChart = null;
 

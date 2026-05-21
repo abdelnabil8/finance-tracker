@@ -422,3 +422,20 @@ tr:last-child td { border-bottom: none; }
     font-family: 'Share Tech Mono', monospace;
     min-height: 20px;
 }
+.logout-btn {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+
+.logout-btn:hover {
+    background: rgba(255,68,102,0.1);
+}
