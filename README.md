@@ -3,7 +3,7 @@
 
 A full-stack web application to track personal income and expenses, built from scratch with a futuristic dark/green UI.
 
-> 🔴 **Live Demo:** [https://finance-tracker-xxxx.onrender.com](https://finance-tracker-xxxx.onrender.com)
+> 🔴 **Live Demo:** [https://finance-tracker-hyv7.onrender.com](https://finance-tracker-hyv7.onrender.com)
 
 ---
 
