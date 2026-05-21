@@ -1,7 +1,7 @@
 
 
-const API = "http://localhost:8000/api/transactions/";
-const AUTH_API = "http://localhost:8000/api/auth";
+const API = "/api/transactions/";
+const AUTH_API = "/api/auth";
 let token = sessionStorage.getItem("token") || null;
 
 window.onload = function() {
