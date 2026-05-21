@@ -1,14 +1,25 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Transaction, TransactionCreate, TransactionResponse
-from typing import List
+from typing import List, Optional
 
 router = APIRouter()
 
 @router.get("/", response_model=List[TransactionResponse])
-def get_transactions(db: Session = Depends(get_db)):
-    return db.query(Transaction).all()
+def get_transactions(
+    type: Optional[str] = Query(None),
+    category: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    query = db.query(Transaction)
+    
+    if type:
+        query = query.filter(Transaction.type == type)
+    if category:
+        query = query.filter(Transaction.category == category)
+    
+    return query.all()
 
 @router.post("/", response_model=TransactionResponse)
 def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
@@ -22,7 +33,7 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
 def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
     transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not transaction:
-        return {"error": "Transaction not found"}
+        raise HTTPException(status_code=404, detail="Transaction not found")
     db.delete(transaction)
     db.commit()
     return {"message": "Deleted successfully"}
